@@ -1,0 +1,41 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+import time
+ 
+test1 = webdriver.Chrome()
+test1.get("https://exe.ua/")
+items = ["Смартфони", "Монітори", "Планшети", "Проектори", "Ноутбуки"]
+time.sleep(2)
+print("Test started......")
+
+for elem in items:
+  try:
+        time.sleep(0.5)
+        search = test1.find_element(By.XPATH,'//*[@id="search_query"]')
+        search.clear()
+        search.send_keys(elem)
+        search.send_keys(Keys.ENTER)
+
+        time.sleep(1)
+
+    
+        titles = test1.find_elements(By.XPATH, '//a[contains(@class, "title")]')
+
+        if not titles :
+         print(f"[{elem}] Немає результатів")
+        else:
+         found = any(elem.lower() in t.text.lower() for t in titles)
+         if found:
+            print(f"[{elem}] Знайдено релевантний товар")
+         else:
+            print(f"[{elem}] Є товари, але назви не збігаються")
+
+  except Exception as e:
+        print(f"[{elem}] Помилка під час обробки: {e}")
+
+    
+test1.quit()
+print ("Test -finished")
